@@ -35,11 +35,12 @@ jobs:
       run: |
         cd physx/compiler/mac64
         
-        # Forzamos ARCHS=arm64 y ONLY_ACTIVE_ARCH=YES para decirle a Xcode
-        # que se olvide de x86_64 y use la arquitectura del procesador actual.
-        xcodebuild -project PhysXSDK.xcodeproj \
+        # 'arch -x86_64' fuerza a todo el proceso de compilación a emular un entorno Intel.
+        # Esto permite que las instrucciones SIMD de PhysX (SSE/AVX) se compilen sin error.
+        arch -x86_64 xcodebuild -project PhysXSDK.xcodeproj \
                    -configuration Release \
-                   ARCHS=arm64 \
+                   -sdk macosx \
+                   ARCHS=x86_64 \
                    ONLY_ACTIVE_ARCH=YES \
                    OTHER_CFLAGS="-Wno-error -Wno-missing-include-dirs" \
                    OTHER_CPLUSPLUSFLAGS="-Wno-error -Wno-missing-include-dirs"
