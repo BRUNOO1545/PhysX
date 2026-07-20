@@ -52,10 +52,13 @@ jobs:
                    OTHER_CFLAGS="-Wno-error -Wno-missing-include-dirs" \
                    OTHER_CPLUSPLUSFLAGS="-Wno-error -Wno-missing-include-dirs"
 
-    - name: Debug - Rastrear archivos 
+    - name: Debug - Encontrar archivos de librerías
       run: |
-        echo "Buscando archivos .a en todo el directorio physx..."
+        echo "Buscando archivos .a en el repositorio:"
         find physx -name "*.a"
+        echo "---"
+        echo "Estructura de la carpeta bin:"
+        ls -R physx/bin/ || echo "La carpeta bin no existe"
 
     - name: Upload Binaries
       uses: actions/upload-artifact@v4
