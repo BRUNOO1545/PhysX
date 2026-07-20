@@ -40,12 +40,19 @@ jobs:
       with:
         python-version: '3.x'
 
+    # --- DEPENDENCIA LINUX ---
     - name: Install Linux Dependencies
       if: runner.os == 'Linux'
       run: |
         sudo apt-get update
-        sudo apt-get install -y clang
+        sudo apt-get install -y clang libxxf86vm-dev libglu1-mesa-dev libx11-dev freeglut3-dev gcc-multilib g++-multilib
 
+    # --- DEPENDENCIA WINDOWS ---
+    - name: Setup MSBuild (Windows)
+      if: runner.os == 'Windows'
+      uses: microsoft/setup-msbuild@v2
+
+    # --- GENERACIÓN DE PROYECTOS ---
     - name: Generate Projects (Mac / Linux)
       if: runner.os != 'Windows'
       run: |
@@ -59,22 +66,20 @@ jobs:
         cd physx
         .\generate_projects.bat ${{ matrix.preset }}
 
-    # --- COMPILACIÓN macOS (Debug y Release) ---
+    # --- COMPILACIÓN macOS ---
     - name: Compile macOS
       if: runner.os == 'macOS'
       run: |
         cd physx/compiler/${{ matrix.compiler_dir }}
         
         echo "--- Compilando DEBUG ---"
-        # Usamos -configuration debug (en minúscula)
         arch -x86_64 xcodebuild -project PhysXSDK.xcodeproj -configuration debug -target PhysXFoundation -target PhysXCommon -target PhysX -target PhysXCooking -target PhysXExtensions -target PhysXVehicle ARCHS=x86_64 ONLY_ACTIVE_ARCH=YES OTHER_CFLAGS="-Wno-error -Wno-missing-include-dirs" OTHER_CPLUSPLUSFLAGS="-Wno-error -Wno-missing-include-dirs"
         
         echo "--- Compilando RELEASE ---"
-        # Usamos -configuration release (en minúscula)
         arch -x86_64 xcodebuild -project PhysXSDK.xcodeproj -configuration release -target PhysXFoundation -target PhysXCommon -target PhysX -target PhysXCooking -target PhysXExtensions -target PhysXVehicle ARCHS=x86_64 ONLY_ACTIVE_ARCH=YES OTHER_CFLAGS="-Wno-error -Wno-missing-include-dirs" OTHER_CPLUSPLUSFLAGS="-Wno-error -Wno-missing-include-dirs"
 
-    # --- COMPILACIÓN WINDOWS (Debug y Release para MSVC 2019) ---
-    - name: Compile Windows (MSVC 2019)
+    # --- COMPILACIÓN WINDOWS ---
+    - name: Compile Windows
       if: runner.os == 'Windows'
       run: |
         cd physx/compiler/${{ matrix.compiler_dir }}
@@ -85,17 +90,15 @@ jobs:
         echo "--- Compilando RELEASE ---"
         msbuild PhysXSDK.sln /p:Configuration=release /p:Platform=x64 /t:PhysXFoundation;PhysXCommon;PhysX;PhysXCooking;PhysXExtensions;PhysXVehicle -m
 
-    # --- COMPILACIÓN LINUX (Debug y Release) ---
-    - name: Compile Linux (Make)
+    # --- COMPILACIÓN LINUX ---
+    - name: Compile Linux
       if: runner.os == 'Linux'
       run: |
-        cd physx/compiler/${{ matrix.compiler_dir }}
-        
         echo "--- Compilando DEBUG ---"
-        make config=debug -j4
+        make -C physx/compiler/linux-debug -j4
         
         echo "--- Compilando RELEASE ---"
-        make config=release -j4
+        make -C physx/compiler/linux-release -j4
 
     # --- EMPAQUETADO MAESTRO ---
     - name: Upload Binaries and Includes
