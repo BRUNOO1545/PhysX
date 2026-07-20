@@ -35,11 +35,18 @@ jobs:
       run: |
         cd physx/compiler/mac64
         
-        # 'arch -x86_64' fuerza a todo el proceso de compilación a emular un entorno Intel.
-        # Esto permite que las instrucciones SIMD de PhysX (SSE/AVX) se compilen sin error.
+        # Eliminamos cualquier artefacto previo para limpiar el error anterior
+        xcodebuild -project PhysXSDK.xcodeproj -configuration Release clean
+        
+        # Compilamos SOLO las librerías necesarias para un motor de físicas
         arch -x86_64 xcodebuild -project PhysXSDK.xcodeproj \
                    -configuration Release \
-                   -sdk macosx \
+                   -target PhysXFoundation \
+                   -target PhysXCommon \
+                   -target PhysX \
+                   -target PhysXCooking \
+                   -target PhysXExtensions \
+                   -target PhysXVehicle \
                    ARCHS=x86_64 \
                    ONLY_ACTIVE_ARCH=YES \
                    OTHER_CFLAGS="-Wno-error -Wno-missing-include-dirs" \
