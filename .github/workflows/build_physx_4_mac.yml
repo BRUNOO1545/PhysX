@@ -35,11 +35,13 @@ jobs:
       run: |
         cd physx/compiler/mac64
         
-        # Inyectamos CXXFLAGS para decirle a Clang: 
-        # "No conviertas las advertencias en errores" (-Wno-error)
-        # y "No te quejes si no encuentras carpetas de includes" (-Wno-missing-include-dirs)
+        # 1. LISTAMOS para estar 100% seguros de qué archivo de proyecto se creó
+        ls -F
         
-        make -j$(sysctl -n hw.ncpu) CXXFLAGS="-Wno-error -Wno-missing-include-dirs"
+        # 2. COMPILAMOS usando xcodebuild
+        # Asumiendo que el archivo principal se llama "PhysXSDK.xcodeproj"
+        # xcodebuild necesita el nombre del proyecto y la configuración (Release)
+        xcodebuild -project PhysXSDK.xcodeproj -configuration Release
 
     - name: Upload Binaries
       uses: actions/upload-artifact@v4
