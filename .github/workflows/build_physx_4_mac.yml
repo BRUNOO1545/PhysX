@@ -35,13 +35,14 @@ jobs:
       run: |
         cd physx/compiler/mac64
         
-        # 1. LISTAMOS para estar 100% seguros de qué archivo de proyecto se creó
-        ls -F
-        
-        # 2. COMPILAMOS usando xcodebuild
-        # Asumiendo que el archivo principal se llama "PhysXSDK.xcodeproj"
-        # xcodebuild necesita el nombre del proyecto y la configuración (Release)
-        xcodebuild -project PhysXSDK.xcodeproj -configuration Release
+        # Forzamos ARCHS=arm64 y ONLY_ACTIVE_ARCH=YES para decirle a Xcode
+        # que se olvide de x86_64 y use la arquitectura del procesador actual.
+        xcodebuild -project PhysXSDK.xcodeproj \
+                   -configuration Release \
+                   ARCHS=arm64 \
+                   ONLY_ACTIVE_ARCH=YES \
+                   OTHER_CFLAGS="-Wno-error -Wno-missing-include-dirs" \
+                   OTHER_CPLUSPLUSFLAGS="-Wno-error -Wno-missing-include-dirs"
 
     - name: Upload Binaries
       uses: actions/upload-artifact@v4
