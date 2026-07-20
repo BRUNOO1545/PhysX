@@ -52,18 +52,10 @@ jobs:
                    OTHER_CFLAGS="-Wno-error -Wno-missing-include-dirs" \
                    OTHER_CPLUSPLUSFLAGS="-Wno-error -Wno-missing-include-dirs"
 
-    - name: Debug - Encontrar archivos de librerías
-      run: |
-        echo "Buscando archivos .a en el repositorio:"
-        find physx -name "*.a"
-        echo "---"
-        echo "Estructura de la carpeta bin:"
-        ls -R physx/bin/ || echo "La carpeta bin no existe"
-
     - name: Upload Binaries
       uses: actions/upload-artifact@v4
       with:
         name: PhysX-4.1-macOS-Binaries
-        # Cambiamos path a 'physx/' para capturar todo el directorio de salida,
-        # sin importar si se llama 'mac64', 'mac.x86_64' o 'bin'.
-        path: physx/
+        path: |
+          physx/bin/mac.x86_64/
+          physx/include/
