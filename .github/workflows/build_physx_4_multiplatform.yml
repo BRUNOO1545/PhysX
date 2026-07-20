@@ -9,17 +9,17 @@ jobs:
       fail-fast: false
       matrix:
         include:
-          - os: macos-latest
+          - os: MacOs
             preset: mac64
             compiler_dir: mac64
             bin_dir: mac.x86_64
             
-          - os: windows-2019
+          - os: Windows (Visual Studio 2019)
             preset: vc16win64
             compiler_dir: vc16win64
             bin_dir: win.x86_64.vc142.mt
             
-          - os: ubuntu-20.04
+          - os: Ubuntu 20.04
             preset: linux
             compiler_dir: linux
             bin_dir: linux.clang
