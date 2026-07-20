@@ -11,7 +11,7 @@ jobs:
     - name: Checkout PhysX 4.1
       uses: actions/checkout@v4
       with:
-        repository: NVIDIA-PhysX/PhysX
+        repository: NVIDIAGameWorks/PhysX
         ref: 4.1
         submodules: recursive
 
