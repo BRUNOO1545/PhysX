@@ -33,13 +33,13 @@ jobs:
 
     - name: Compile Library
       run: |
-        # Basado en lo que vimos en el paso anterior, vamos a la carpeta correcta
-        # (Si el anterior mostró que está en compiler/mac64/compiler/ o similar, ajustamos)
         cd physx/compiler/mac64
         
-        # En lugar de solo 'make', usemos el comando estándar de CMake 
-        # que es mucho más seguro para detectar el Makefile o el proyecto
-        cmake --build . --config Release --parallel $(sysctl -n hw.ncpu)
+        # Inyectamos CXXFLAGS para decirle a Clang: 
+        # "No conviertas las advertencias en errores" (-Wno-error)
+        # y "No te quejes si no encuentras carpetas de includes" (-Wno-missing-include-dirs)
+        
+        make -j$(sysctl -n hw.ncpu) CXXFLAGS="-Wno-error -Wno-missing-include-dirs"
 
     - name: Upload Binaries
       uses: actions/upload-artifact@v4
