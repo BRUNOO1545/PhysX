@@ -52,9 +52,15 @@ jobs:
                    OTHER_CFLAGS="-Wno-error -Wno-missing-include-dirs" \
                    OTHER_CPLUSPLUSFLAGS="-Wno-error -Wno-missing-include-dirs"
 
+    - name: Debug - Listar binarios encontrados
+      run: |
+        echo "Buscando archivos .a en la carpeta physx..."
+        find physx -name "*.a"
+
     - name: Upload Binaries
       uses: actions/upload-artifact@v4
       with:
         name: PhysX-4.1-macOS-Binaries
-        # PhysX suele depositar los binarios finales (.a) en la carpeta bin/mac64/
-        path: physx/bin/mac64/
+        # Cambiamos esto a un comodín para que capture todo lo que termine en .a
+        # o simplemente le decimos que suba la carpeta bin/ completa
+        path: physx/bin/
