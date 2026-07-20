@@ -24,16 +24,22 @@ jobs:
       run: |
         cd physx
         chmod +x generate_projects.sh
-        # El argumento mac64 le dice al script que no pregunte nada y genere directo
         ./generate_projects.sh mac64
+        
+        # DEBUG: Vamos a listar lo que hay dentro de la carpeta 'compiler'
+        # para encontrar dónde se escondió el Makefile.
+        echo "--- CONTENIDO DE LA CARPETA COMPILER ---"
+        ls -R compiler/
 
     - name: Compile Library
       run: |
-        # PhysX 4.1 genera los makefiles dentro de la carpeta compiler/mac64
+        # Basado en lo que vimos en el paso anterior, vamos a la carpeta correcta
+        # (Si el anterior mostró que está en compiler/mac64/compiler/ o similar, ajustamos)
         cd physx/compiler/mac64
         
-        # Usamos 'make' con -j para compilar en paralelo usando todos los núcleos de la VM
-        make -j$(sysctl -n hw.ncpu)
+        # En lugar de solo 'make', usemos el comando estándar de CMake 
+        # que es mucho más seguro para detectar el Makefile o el proyecto
+        cmake --build . --config Release --parallel $(sysctl -n hw.ncpu)
 
     - name: Upload Binaries
       uses: actions/upload-artifact@v4
