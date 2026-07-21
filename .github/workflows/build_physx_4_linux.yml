@@ -1,0 +1,48 @@
+name: Build PhysX 4.1 (Linux)
+
+on:
+  workflow_dispatch: 
+
+jobs:
+  build-physx-linux:
+    runs-on: ubuntu-20.04
+
+    steps:
+    - name: Checkout PhysX 4.1
+      uses: actions/checkout@v4
+      with:
+        repository: BRUNOO1545/PhysX
+        ref: 4.1
+        submodules: recursive
+
+    - name: Setup Python
+      uses: actions/setup-python@v5
+      with:
+        python-version: '3.x'
+
+    - name: Install Linux Dependencies
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y clang libxxf86vm-dev libglu1-mesa-dev libx11-dev freeglut3-dev gcc-multilib g++-multilib
+
+    - name: Generate Projects (Linux)
+      run: |
+        cd physx
+        chmod +x generate_projects.sh
+        ./generate_projects.sh linux
+
+    - name: Compile Linux
+      run: |
+        echo "--- Compilando DEBUG ---"
+        make -C physx/compiler/linux-debug -j4
+        
+        echo "--- Compilando RELEASE ---"
+        make -C physx/compiler/linux-release -j4
+
+    - name: Upload Binaries and Includes
+      uses: actions/upload-artifact@v4
+      with:
+        name: PhysX-4.1-Linux-Binaries
+        path: |
+          physx/include/
+          physx/bin/linux.clang/
