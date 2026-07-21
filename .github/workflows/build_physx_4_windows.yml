@@ -1,0 +1,47 @@
+name: Build PhysX 4.1 (Windows)
+
+on:
+  workflow_dispatch: 
+
+jobs:
+  build-physx-windows:
+    runs-on: windows-2019
+
+    steps:
+    - name: Checkout PhysX 4.1
+      uses: actions/checkout@v4
+      with:
+        repository: BRUNOO1545/PhysX
+        ref: 4.1
+        submodules: recursive
+
+    - name: Setup Python
+      uses: actions/setup-python@v5
+      with:
+        python-version: '3.x'
+
+    - name: Setup MSBuild (Windows)
+      uses: microsoft/setup-msbuild@v2
+
+    - name: Generate Projects (Windows)
+      run: |
+        cd physx
+        .\generate_projects.bat vc16win64
+
+    - name: Compile Windows
+      run: |
+        cd physx/compiler/vc16win64
+        
+        echo "--- Compilando DEBUG ---"
+        msbuild PhysXSDK.sln /p:Configuration=debug /p:Platform=x64 /t:PhysXFoundation;PhysXCommon;PhysX;PhysXCooking;PhysXExtensions;PhysXVehicle -m
+        
+        echo "--- Compilando RELEASE ---"
+        msbuild PhysXSDK.sln /p:Configuration=release /p:Platform=x64 /t:PhysXFoundation;PhysXCommon;PhysX;PhysXCooking;PhysXExtensions;PhysXVehicle -m
+
+    - name: Upload Binaries and Includes
+      uses: actions/upload-artifact@v4
+      with:
+        name: PhysX-4.1-Windows-Binaries
+        path: |
+          physx/include/
+          physx/bin/win.x86_64.vc142.mt/
