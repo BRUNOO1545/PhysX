@@ -33,10 +33,10 @@ jobs:
         cd physx/compiler/vc16win64
         
         echo "--- Compilando DEBUG ---"
-        msbuild PhysXSDK.sln /p:Configuration=debug /p:Platform=x64 /t:PhysXFoundation;PhysXCommon;PhysX;PhysXCooking;PhysXExtensions;PhysXVehicle -m
+        msbuild PhysXSDK.sln /p:Configuration=debug /p:Platform=x64
         
         echo "--- Compilando RELEASE ---"
-        msbuild PhysXSDK.sln /p:Configuration=release /p:Platform=x64 /t:PhysXFoundation;PhysXCommon;PhysX;PhysXCooking;PhysXExtensions;PhysXVehicle -m
+        msbuild PhysXSDK.sln /p:Configuration=release /p:Platform=x64
 
     - name: Upload Binaries and Includes
       uses: actions/upload-artifact@v4
