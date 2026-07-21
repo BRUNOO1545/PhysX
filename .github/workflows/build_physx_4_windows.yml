@@ -15,11 +15,6 @@ jobs:
         ref: 4.1
         submodules: recursive
     
-    - name: Setup Visual Studio 2019 Build Tools
-      uses: microsoft/setup-msbuild@v2
-      with:
-        vs-version: '16.11'
-    
     - name: Setup Python
       uses: actions/setup-python@v5
       with:
@@ -27,11 +22,23 @@ jobs:
 
     - name: Setup MSBuild (Windows)
       uses: microsoft/setup-msbuild@v2
+      with:
+        vs-version: '[16.0,17.0)'
+    
+    - name: Show Visual Studio
+      shell: pwsh
+      run: |
+        & "${env:ProgramFiles(x86)}\Microsoft Visual Studio\Installer\vswhere.exe" -all
 
     - name: Generate Projects (Windows)
       run: |
         cd physx
         .\generate_projects.bat vc16win64
+    
+    - name: Check generated solution
+      shell: pwsh
+      run: |
+        Get-ChildItem physx -Recurse -Filter *.sln
 
     - name: Compile Windows
       run: |
