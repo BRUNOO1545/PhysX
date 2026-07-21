@@ -5,7 +5,7 @@ on:
 
 jobs:
   build-physx-windows:
-    runs-on: windows-2019
+    runs-on: windows-latest
 
     steps:
     - name: Checkout PhysX 4.1
@@ -14,7 +14,12 @@ jobs:
         repository: BRUNOO1545/PhysX
         ref: 4.1
         submodules: recursive
-
+    
+    - name: Setup Visual Studio 2019 Build Tools
+      uses: microsoft/setup-msbuild@v2
+      with:
+        vs-version: '16.11'
+    
     - name: Setup Python
       uses: actions/setup-python@v5
       with:
