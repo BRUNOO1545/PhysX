@@ -31,10 +31,10 @@ jobs:
         cd physx/compiler/mac64
         
         echo "--- Compilando DEBUG ---"
-        arch -x86_64 xcodebuild -project PhysXSDK.xcodeproj -configuration debug -target PhysXFoundation -target PhysXCommon -target PhysX -target PhysXCooking -target PhysXExtensions -target PhysXVehicle ARCHS=x86_64 ONLY_ACTIVE_ARCH=YES OTHER_CFLAGS="-Wno-error -Wno-missing-include-dirs" OTHER_CPLUSPLUSFLAGS="-Wno-error -Wno-missing-include-dirs"
+        arch -x86_64 xcodebuild -project PhysXSDK.xcodeproj -configuration debug -target PhysXCharacterKinematic -target PhysXFoundation -target PhysXCommon -target PhysX -target PhysXCooking -target PhysXExtensions -target PhysXVehicle ARCHS=x86_64 ONLY_ACTIVE_ARCH=YES OTHER_CFLAGS="-Wno-error -Wno-missing-include-dirs" OTHER_CPLUSPLUSFLAGS="-Wno-error -Wno-missing-include-dirs"
         
         echo "--- Compilando RELEASE ---"
-        arch -x86_64 xcodebuild -project PhysXSDK.xcodeproj -configuration release -target PhysXFoundation -target PhysXCommon -target PhysX -target PhysXCooking -target PhysXExtensions -target PhysXVehicle ARCHS=x86_64 ONLY_ACTIVE_ARCH=YES OTHER_CFLAGS="-Wno-error -Wno-missing-include-dirs" OTHER_CPLUSPLUSFLAGS="-Wno-error -Wno-missing-include-dirs"
+        arch -x86_64 xcodebuild -project PhysXSDK.xcodeproj -configuration release -target PhysXCharacterKinematic -target PhysXFoundation -target PhysXCommon -target PhysX -target PhysXCooking -target PhysXExtensions -target PhysXVehicle ARCHS=x86_64 ONLY_ACTIVE_ARCH=YES OTHER_CFLAGS="-Wno-error -Wno-missing-include-dirs" OTHER_CPLUSPLUSFLAGS="-Wno-error -Wno-missing-include-dirs"
 
     - name: Upload Binaries and Includes
       uses: actions/upload-artifact@v4
